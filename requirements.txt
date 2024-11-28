@@ -21,3 +21,6 @@ SQLAlchemy-Utils==0.41.2
 starlette==0.41.3
 typing_extensions==4.12.2
 uvicorn==0.32.1
+streamlit==1.32.2
+requests==2.31.0
+pandas==2.2.1
