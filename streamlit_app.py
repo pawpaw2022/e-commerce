@@ -42,6 +42,17 @@ def show_products_page():
     with st.expander("➕ Add New Product", expanded=False):
         show_product_modal()
     
+    # Add Delete Section in an expander
+    with st.expander("🗑️ Delete Product", expanded=False):
+        product_id = st.number_input("Product ID to delete", min_value=1, step=1)
+        if st.button("Delete Product"):
+            response = requests.delete(f"{API_URL}/products/{product_id}")
+            if response.status_code == 200:
+                st.success("Product deleted successfully!")
+                st.rerun()
+            else:
+                st.error(f"Error deleting product: {response.text}")
+    
     # Filters
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -78,6 +89,17 @@ def show_categories_page():
     with st.expander("➕ Add New Category", expanded=False):
         show_category_modal()
     
+    # Add Delete Section in an expander
+    with st.expander("🗑️ Delete Category", expanded=False):
+        category_id = st.number_input("Category ID to delete", min_value=1, step=1)
+        if st.button("Delete Category"):
+            response = requests.delete(f"{API_URL}/categories/{category_id}")
+            if response.status_code == 200:
+                st.success("Category deleted successfully!")
+                st.rerun()
+            else:
+                st.error(f"Error deleting category: {response.text}")
+    
     response = requests.get(f"{API_URL}/categories")
     if response.status_code == 200:
         categories = response.json().get('categories', [])
@@ -95,6 +117,17 @@ def show_customers_page():
     # Add Insert Button in an expander
     with st.expander("➕ Add New Customer", expanded=False):
         show_customer_modal()
+    
+    # Add Delete Section in an expander
+    with st.expander("🗑️ Delete Customer", expanded=False):
+        customer_id = st.number_input("Customer ID to delete", min_value=1, step=1)
+        if st.button("Delete Customer"):
+            response = requests.delete(f"{API_URL}/customers/{customer_id}")
+            if response.status_code == 200:
+                st.success("Customer deleted successfully!")
+                st.rerun()
+            else:
+                st.error(f"Error deleting customer: {response.text}")
     
     # Filters
     state = st.text_input("Filter by State")
@@ -121,6 +154,17 @@ def show_orders_page():
     # Add Insert Button in an expander
     with st.expander("➕ Add New Order", expanded=False):
         show_order_modal()
+    
+    # Add Delete Section in an expander
+    with st.expander("🗑️ Delete Order", expanded=False):
+        order_id = st.number_input("Order ID to delete", min_value=1, step=1)
+        if st.button("Delete Order"):
+            response = requests.delete(f"{API_URL}/orders/{order_id}")
+            if response.status_code == 200:
+                st.success("Order deleted successfully!")
+                st.rerun()
+            else:
+                st.error(f"Error deleting order: {response.text}")
     
     # Add a toggle for filters
     show_filters = st.expander("Show Filters", expanded=False)
@@ -245,6 +289,17 @@ def show_reviews_page():
     # Add Insert Button in an expander
     with st.expander("➕ Add New Review", expanded=False):
         show_review_modal()
+    
+    # Add Delete Section in an expander
+    with st.expander("🗑️ Delete Review", expanded=False):
+        review_id = st.number_input("Review ID to delete", min_value=1, step=1)
+        if st.button("Delete Review"):
+            response = requests.delete(f"{API_URL}/reviews/{review_id}")
+            if response.status_code == 200:
+                st.success("Review deleted successfully!")
+                st.rerun()
+            else:
+                st.error(f"Error deleting review: {response.text}")
     
     # Add a toggle for filters
     show_filters = st.expander("Show Filters", expanded=False)
