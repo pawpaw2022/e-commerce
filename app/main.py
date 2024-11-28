@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from .api.routers import product, health, category, customer, order, review
 
 app = FastAPI(
     title="Online Shopping API",
@@ -16,13 +17,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
+# Include routers
+app.include_router(health.router)
+app.include_router(product.router)
+app.include_router(category.router)
+app.include_router(customer.router)
+app.include_router(order.router)
+app.include_router(review.router)
 
 if __name__ == "__main__":
     import uvicorn
