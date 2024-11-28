@@ -38,6 +38,10 @@ def main():
 def show_products_page():
     st.header("Products")
     
+    # Add Insert Button in an expander
+    with st.expander("➕ Add New Product", expanded=False):
+        show_product_modal()
+    
     # Filters
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -70,6 +74,10 @@ def show_products_page():
 def show_categories_page():
     st.header("Categories")
     
+    # Add Insert Button in an expander
+    with st.expander("➕ Add New Category", expanded=False):
+        show_category_modal()
+    
     response = requests.get(f"{API_URL}/categories")
     if response.status_code == 200:
         categories = response.json().get('categories', [])
@@ -83,6 +91,10 @@ def show_categories_page():
 
 def show_customers_page():
     st.header("Customers")
+    
+    # Add Insert Button in an expander
+    with st.expander("➕ Add New Customer", expanded=False):
+        show_customer_modal()
     
     # Filters
     state = st.text_input("Filter by State")
@@ -105,6 +117,10 @@ def show_customers_page():
 
 def show_orders_page():
     st.header("Orders")
+    
+    # Add Insert Button in an expander
+    with st.expander("➕ Add New Order", expanded=False):
+        show_order_modal()
     
     # Add a toggle for filters
     show_filters = st.expander("Show Filters", expanded=False)
@@ -225,6 +241,10 @@ def show_orders_page():
 
 def show_reviews_page():
     st.header("Reviews")
+    
+    # Add Insert Button in an expander
+    with st.expander("➕ Add New Review", expanded=False):
+        show_review_modal()
     
     # Add a toggle for filters
     show_filters = st.expander("Show Filters", expanded=False)
@@ -363,6 +383,237 @@ def show_reviews_page():
                 st.info("No reviews found")
         else:
             st.error("Failed to fetch reviews")
+
+def show_product_modal():
+    with st.form("product_form"):
+        st.subheader("Add New Product")
+        
+        # Product form fields
+        product_name = st.text_input("Product Name", max_chars=100)
+        
+        # Get categories for dropdown
+        categories_response = requests.get(f"{API_URL}/categories")
+        categories = categories_response.json().get('categories', [])
+        category_options = {cat['categoryName']: cat['categoryId'] for cat in categories}
+        
+        selected_category = st.selectbox(
+            "Category",
+            options=list(category_options.keys())
+        )
+        
+        price = st.number_input("Price", min_value=0.01, step=0.01, format="%.2f")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            submitted = st.form_submit_button("Add Product")
+        
+        if submitted:
+            if not product_name or not selected_category or not price:
+                st.error("Please fill all required fields")
+                return
+            
+            # Prepare data
+            new_product = {
+                "productName": product_name,
+                "categoryId": category_options[selected_category],
+                "price": price
+            }
+            
+            # Send POST request
+            response = requests.post(
+                f"{API_URL}/products/",
+                json=new_product
+            )
+            
+            if response.status_code == 201:
+                st.success("Product added successfully!")
+                st.rerun()  # Refresh the page to show new data
+            else:
+                st.error(f"Error adding product: {response.text}")
+
+def show_category_modal():
+    with st.form("category_form"):
+        st.subheader("Add New Category")
+        
+        # Category form fields
+        category_name = st.text_input("Category Name", max_chars=50)
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            submitted = st.form_submit_button("Add Category")
+        
+        if submitted:
+            if not category_name:
+                st.error("Please fill all required fields")
+                return
+            
+            # Prepare data
+            new_category = {
+                "categoryName": category_name
+            }
+            
+            # Send POST request
+            response = requests.post(
+                f"{API_URL}/categories/",
+                json=new_category
+            )
+            
+            if response.status_code == 201:
+                st.success("Category added successfully!")
+                st.rerun()
+            else:
+                st.error(f"Error adding category: {response.text}")
+
+def show_customer_modal():
+    with st.form("customer_form"):
+        st.subheader("Add New Customer")
+        
+        # Customer form fields
+        col1, col2 = st.columns(2)
+        with col1:
+            first_name = st.text_input("First Name", max_chars=50)
+        with col2:
+            last_name = st.text_input("Last Name", max_chars=50)
+        
+        address_state = st.text_input("State", max_chars=50)
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            submitted = st.form_submit_button("Add Customer")
+        
+        if submitted:
+            if not first_name or not last_name or not address_state:
+                st.error("Please fill all required fields")
+                return
+            
+            # Prepare data
+            new_customer = {
+                "firstName": first_name,
+                "lastName": last_name,
+                "addressState": address_state
+            }
+            
+            # Send POST request
+            response = requests.post(
+                f"{API_URL}/customers/",
+                json=new_customer
+            )
+            
+            if response.status_code == 201:
+                st.success("Customer added successfully!")
+                st.rerun()
+            else:
+                st.error(f"Error adding customer: {response.text}")
+
+def show_order_modal():
+    with st.form("order_form"):
+        st.subheader("Add New Order")
+        
+        # Get customers for dropdown
+        customers_response = requests.get(f"{API_URL}/customers")
+        customers = customers_response.json().get('customers', [])
+        customer_options = {f"{c['firstName']} {c['lastName']}": c['customerId'] for c in customers}
+        
+        # Get products for dropdown
+        products_response = requests.get(f"{API_URL}/products")
+        products = products_response.json().get('products', [])
+        product_options = {p['productName']: p['productId'] for p in products}
+        
+        # Order form fields
+        selected_customer = st.selectbox(
+            "Customer",
+            options=list(customer_options.keys())
+        )
+        
+        selected_product = st.selectbox(
+            "Product",
+            options=list(product_options.keys())
+        )
+        
+        quantity = st.number_input("Quantity", min_value=1, step=1)
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            submitted = st.form_submit_button("Add Order")
+        
+        if submitted:
+            if not selected_customer or not selected_product or not quantity:
+                st.error("Please fill all required fields")
+                return
+            
+            # Prepare data
+            new_order = {
+                "customerId": customer_options[selected_customer],
+                "productId": product_options[selected_product],
+                "quantity": quantity
+            }
+            
+            # Send POST request
+            response = requests.post(
+                f"{API_URL}/orders/",
+                json=new_order
+            )
+            
+            if response.status_code == 201:
+                st.success("Order added successfully!")
+                st.rerun()
+            else:
+                st.error(f"Error adding order: {response.text}")
+
+def show_review_modal():
+    with st.form("review_form"):
+        st.subheader("Add New Review")
+        
+        # Get customers for dropdown
+        customers_response = requests.get(f"{API_URL}/customers")
+        customers = customers_response.json().get('customers', [])
+        customer_options = {f"{c['firstName']} {c['lastName']}": c['customerId'] for c in customers}
+        
+        # Get products for dropdown
+        products_response = requests.get(f"{API_URL}/products")
+        products = products_response.json().get('products', [])
+        product_options = {p['productName']: p['productId'] for p in products}
+        
+        # Review form fields
+        selected_customer = st.selectbox(
+            "Customer",
+            options=list(customer_options.keys())
+        )
+        
+        selected_product = st.selectbox(
+            "Product",
+            options=list(product_options.keys())
+        )
+        
+        rating = st.slider("Rating", min_value=1, max_value=10, value=5)
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            submitted = st.form_submit_button("Add Review")
+        
+        if submitted:
+            if not selected_customer or not selected_product:
+                st.error("Please fill all required fields")
+                return
+            
+            # Prepare data
+            new_review = {
+                "customerId": customer_options[selected_customer],
+                "productId": product_options[selected_product],
+                "rating": rating
+            }
+            
+            # Send POST request
+            response = requests.post(
+                f"{API_URL}/reviews/",
+                json=new_review
+            )
+            
+            if response.status_code == 201:
+                st.success("Review added successfully!")
+                st.rerun()
+            else:
+                st.error(f"Error adding review: {response.text}")
 
 if __name__ == "__main__":
     main() 
