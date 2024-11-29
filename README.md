@@ -31,8 +31,8 @@ A full-stack e-commerce analytics dashboard built with FastAPI and Streamlit. Th
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
-cd <project-directory>
+git clone https://github.com/pawpaw2022/e-commerce.git
+cd e-commerce
 ```
 
 2. Create and activate a virtual environment:
