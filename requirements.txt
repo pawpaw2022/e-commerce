@@ -8,7 +8,7 @@ fastapi==0.115.5
 greenlet==3.1.1
 h11==0.14.0
 idna==3.10
-mysql-connector-python==9.1.0
+mysql-connector-python==8.0.33
 pycparser==2.22
 pydantic==2.10.2
 pydantic-settings==2.6.1

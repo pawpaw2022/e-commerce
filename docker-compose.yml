@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+      - "8501:8501"
+    environment:
+      - API_URL=http://localhost:8000
+      - MYSQL_HOST=db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=lusining123
+      - MYSQL_DATABASE=ecommerce
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=ecommerce
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=lusining123
+      - MYSQL_ROOT_PASSWORD=lusining123
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./app/db/ecommerce.sql:/docker-entrypoint-initdb.d/ecommerce.sql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge

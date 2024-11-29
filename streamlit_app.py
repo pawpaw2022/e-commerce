@@ -1,11 +1,12 @@
+import os
 import streamlit as st
 import requests
 import pandas as pd
 from datetime import datetime
 from urllib.parse import urlencode
 
-# API base URL
-API_URL = "http://localhost:8000"
+# API base URL from environment variable
+API_URL = os.getenv('API_URL', 'http://localhost:8000')
 
 def main():
     st.title("E-Commerce Dashboard")
