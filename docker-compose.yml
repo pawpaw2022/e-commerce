@@ -9,7 +9,7 @@ services:
     environment:
       - API_URL=http://localhost:8000
       - MYSQL_HOST=db
-      - MYSQL_USER=user
+      - MYSQL_USER=root
       - MYSQL_PASSWORD=lusining123
       - MYSQL_DATABASE=ecommerce
     depends_on:
@@ -23,7 +23,7 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_DATABASE=ecommerce
-      - MYSQL_USER=user
+      - MYSQL_USER=root
       - MYSQL_PASSWORD=lusining123
       - MYSQL_ROOT_PASSWORD=lusining123
     volumes:
