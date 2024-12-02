@@ -26,7 +26,24 @@ A full-stack e-commerce analytics dashboard built with FastAPI and Streamlit. Th
 - MySQL 8.0+
 - pip (Python package manager)
 
-## Installation
+## Installation is as easy as one command with Docker 
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/pawpaw2022/e-commerce.git
+cd e-commerce
+```
+
+2. Start docker container (make sure docker is running)
+
+```bash
+docker compose up
+```
+
+3. Go visit `http://localhost:8000/docs` for backend or `http://localhost:8501` for frontend
+
+## Installation without Docker
 
 1. Clone the repository:
 
